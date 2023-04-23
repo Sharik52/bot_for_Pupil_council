@@ -8,6 +8,10 @@ admin_id = 1563658077
 boty = Bot(token=TOKEN)
 dp = Dispatcher(boty)
 
+f = open('Ban_list.txt', 'w+')
+ban_list = f.read().split()
+f.close()
+
 
 # Начальная команда
 @dp.message_handler(commands=['start'])
@@ -20,10 +24,38 @@ async def process_start_command(message: types.Message):
         await message.answer(f"Привет, {message['from'].first_name}! Если у тебя есть какая-либо идея, то напиши мне!")
 
 
+@dp.message_handler(commands=['ban'])
+async def process_start_command(message: types.Message):
+    if message['from'].id == admin_id:
+        if message.reply_to_message.forward_from.id:
+            abuser_id = str(message.reply_to_message.forward_from.id)
+            ban_list.append(abuser_id)
+            b = open('Ban_list.txt', 'w')
+            b.write(abuser_id)
+            b.close()
+            await message.answer(f"Пользователь {abuser_id} заблокирован.")
+
+
+@dp.message_handler(commands=['unban'])
+async def handle_unban_command(message: types.Message):
+    if message['from'].id == admin_id:
+        if message.reply_to_message.forward_from.id:
+            abuser_id = str(message.reply_to_message.forward_from.id)
+            ban_list.remove(abuser_id)
+            c = open('Ban_list.txt', 'w')
+            c.seek(0)
+            for elem in ban_list:
+                c.write(elem)
+            c.close()
+            await message.answer(f"Пользователь {abuser_id} разблокирован.")
+
+
 # Для передачи сообщений администратору
 @dp.message_handler()
 async def process_start_command(message: types.Message):
-    if message.reply_to_message is None:
+    if str(message['from'].id) in ban_list:
+        await message.answer(f"Прошу прощения, но вы заблокированы.)")
+    elif message.reply_to_message is None:
         if '/start' not in message.text:
             await boty.forward_message(admin_id, message.from_user.id, message.message_id)
             await message.answer('Спасибо за сообщение! Я уже передал его члену ученического совета!')

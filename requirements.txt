@@ -1,2 +1,2 @@
-aiogram
+aiogram==1.0.4
 asyncio

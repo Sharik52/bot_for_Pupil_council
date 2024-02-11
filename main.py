@@ -1,4 +1,6 @@
-from aiogram import *
+from aiogram import Bot, types
+from aiogram.dispatcher import Dispatcher
+from aiogram.utils import executor
 
 # Токен бота
 TOKEN = "6014465871:AAHMedcI028U8P-on9mm1RaWh584ZxcTe2A"
@@ -18,10 +20,10 @@ f.close()
 async def process_start_command(message: types.Message):
     # Если сообщение от администратора
     if message['from'].id == admin_id:
-        await message.answer(f"Привет, член ученического совета!")
+        await message.reply(f"Привет, член ученического совета!")
     # Пишет всем пользователям, кто не является администратором
     else:
-        await message.answer(f"Привет, {message['from'].first_name}! Если у тебя есть какая-либо идея, то напиши мне!")
+        await message.reply(f"Привет, {message['from'].first_name}! Если у тебя есть какая-либо идея, то напиши мне!")
 
 
 @dp.message_handler(commands=['ban'])
@@ -33,7 +35,7 @@ async def process_start_command(message: types.Message):
             b = open('Ban_list.txt', 'w')
             b.write(abuser_id)
             b.close()
-            await message.answer(f"Пользователь {abuser_id} заблокирован.")
+            await message.reply(f"Пользователь {abuser_id} заблокирован.")
 
 
 @dp.message_handler(commands=['unban'])
@@ -47,18 +49,18 @@ async def handle_unban_command(message: types.Message):
             for elem in ban_list:
                 c.write(elem)
             c.close()
-            await message.answer(f"Пользователь {abuser_id} разблокирован.")
+            await message.reply(f"Пользователь {abuser_id} разблокирован.")
 
 
 # Для передачи сообщений администратору
 @dp.message_handler()
 async def process_start_command(message: types.Message):
     if str(message['from'].id) in ban_list:
-        await message.answer(f"Прошу прощения, но вы заблокированы.)")
+        await message.reply(f"Прошу прощения, но вы заблокированы.)")
     elif message.reply_to_message is None:
         if '/start' not in message.text:
             await boty.forward_message(admin_id, message.from_user.id, message.message_id)
-            await message.answer('Спасибо за сообщение! Я уже передал его члену ученического совета!')
+            await message.reply('Спасибо за сообщение! Я уже передал его члену ученического совета!')
     else:
         # Если на сообщение отвечает администратор
         if message['from'].id == admin_id:
@@ -67,7 +69,7 @@ async def process_start_command(message: types.Message):
                 await boty.send_message(message.reply_to_message.forward_from.id, message.text)
         else:
             # Пишет пользователю, если он отвечает на сообщения
-            await message.answer('На сообщения нельзя отвечать!')
+            await message.reply('На сообщения нельзя отвечать!')
 
 
 # Для передачи фото администратору

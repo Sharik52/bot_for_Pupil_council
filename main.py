@@ -10,9 +10,7 @@ admin_id = 1563658077
 boty = Bot(token=TOKEN)
 dp = Dispatcher(boty)
 
-f = open('Ban_list.txt', 'w+')
-ban_list = f.read().split()
-f.close()
+ban_list = []
 
 
 # Начальная команда
@@ -32,9 +30,6 @@ async def process_start_command(message: types.Message):
         if message.reply_to_message.forward_from.id:
             abuser_id = str(message.reply_to_message.forward_from.id)
             ban_list.append(abuser_id)
-            b = open('Ban_list.txt', 'w')
-            b.write(abuser_id)
-            b.close()
             await message.reply(f"Пользователь {abuser_id} заблокирован.")
 
 
@@ -44,11 +39,6 @@ async def handle_unban_command(message: types.Message):
         if message.reply_to_message.forward_from.id:
             abuser_id = str(message.reply_to_message.forward_from.id)
             ban_list.remove(abuser_id)
-            c = open('Ban_list.txt', 'w')
-            c.seek(0)
-            for elem in ban_list:
-                c.write(elem)
-            c.close()
             await message.reply(f"Пользователь {abuser_id} разблокирован.")
 
 

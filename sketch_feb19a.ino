@@ -1,12 +1,13 @@
-#define WIFI_SSID "hehehe"
-#define WIFI_PASS "14761476"
-#define BOT_TOKEN "6014465871:AAHMedcI028U8P-on9mm1RaWh584ZxcTe2A"
-#define MY_ID "1563658077" 
+#define WIFI_SSID "hehehe" // Название WiFi или точки доступа
+#define WIFI_PASS "14761476" // Пароль от WiFi или точки доступа
+#define BOT_TOKEN "6014465871:AAHMedcI028U8P-on9mm1RaWh584ZxcTe2A" // Токен бота
+#define MY_ID "1563658077" // ID администратора
 
 #include <FastBot.h>
 #include <string>
 FastBot bot(BOT_TOKEN);
-String ban_list[50];
+String ban_list[50]; // Список забаненых
+int len_of_ban_list_now = 0; // Количество забаненых пользователей
 
 void setup() {
   connectWiFi();
@@ -14,34 +15,56 @@ void setup() {
 }
 
 void newMsg(FB_msg& msg) {
-  // ответить
+  // Действия над сообщениями пользователей
   int flag = 0;
   for (int i=0; i<50; i++) {
     if (msg.userID == ban_list[i]) {
-      bot.sendMessage("Прошу прощения, но вы заблокированы.", msg.chatID);
+      bot.sendMessage("Прошу прощения, но вы заблокированы.", msg.chatID); // Когда пользователь забанен, то программа уведомляет его об этом и не пересылает сообщение администратору
       break;
       flag = 1;
     }
   }
   if (msg.text == "/start") {
-    bot.sendMessage("Привет! Если у тебя есть какая-либо идея, то напиши мне!", msg.chatID);
+    bot.sendMessage("Привет! Если у тебя есть какая-либо идея, то напиши мне!", msg.chatID); // Начало работы пользователя с ботом
   }
   else if (msg.userID == MY_ID) {
     if (!msg.replyText.isEmpty()) {
-      bot.sendMessage(msg.text, msg.replyText);
+      if (msg.text == "/ban") {
+        ban_list[len_of_ban_list_now] = msg.userID;
+        len_of_ban_list_now++;
+        bot.sendMessage("Пользователь заблокирован.", MY_ID); // Блокировка пользователя с помощью команды /ban
+      }
+      else if (msg.text == "/unban") {
+        for (int i=0; i < 50; i++) {
+          if (ban_list[i] == msg.userID) {                        
+            ban_list[i] = "0";
+            len_of_ban_list_now--;
+          }
+        }
+        bot.sendMessage("Пользователь разблокирован.", MY_ID);  // Разблокировка пользователя с помощью команды /unban
+      }
+      else {
+        bot.sendMessage("Ответ от администратора: "+msg.text, msg.replyText); // Ответ администратора пересылается пользователю
+        bot.sendMessage("Ответ отправлен.");
+      }
+    }
+    else {
+      bot.replyMessage("Спасибо за сообщение! Я уже передал его члену ученического совета!", msg.messageID, msg.chatID);
+      bot.sendMessage(msg.userID, MY_ID); 
+      bot.sendMessage(msg.text, MY_ID);
     }
   }
   else if (flag == 0){
-    bot.replyMessage("Спасибо за сообщение! Я уже передал его члену ученического совета!", msg.messageID, msg.chatID);
+    bot.replyMessage("Спасибо за сообщение! Я уже передал его члену ученического совета!", msg.messageID, msg.chatID); // Пересылка сообщения администратору
     bot.sendMessage(msg.userID, MY_ID); 
     bot.sendMessage(msg.text, MY_ID);  
   }
 }
-
+// Цикл, обновляющий информацию о сообщениях в чате
 void loop() {
   bot.tick();
 }
-
+// Подключение к сети
 void connectWiFi() {
   delay(2000);
   Serial.begin(115200);

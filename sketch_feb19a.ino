@@ -1,4 +1,4 @@
-#define WIFI_SSID "hehehe" // Название WiFi или точки доступа
+#define WIFI_SSID "FGI" // Название WiFi или точки доступа
 #define WIFI_PASS "14761476" // Пароль от WiFi или точки доступа
 #define BOT_TOKEN "6014465871:AAHMedcI028U8P-on9mm1RaWh584ZxcTe2A" // Токен бота
 #define MY_ID "1563658077" // ID администратора
@@ -19,18 +19,20 @@ void newMsg(FB_msg& msg) {
   int flag = 0;
   for (int i=0; i<50; i++) {
     if (msg.userID == ban_list[i]) {
-      bot.sendMessage("Прошу прощения, но вы заблокированы.", msg.chatID); // Когда пользователь забанен, то программа уведомляет его об этом и не пересылает сообщение администратору
-      break;
       flag = 1;
+      break;
     }
   }
-  if (msg.text == "/start") {
+  if (flag == 1) {
+    bot.sendMessage("Прошу прощения, но вы заблокированы.", msg.chatID); // Когда пользователь забанен, то программа уведомляет его об этом и не пересылает сообщение администратору
+  }
+  else if (msg.text == "/start") {
     bot.sendMessage("Привет! Если у тебя есть какая-либо идея, то напиши мне!", msg.chatID); // Начало работы пользователя с ботом
   }
   else if (msg.userID == MY_ID) {
     if (!msg.replyText.isEmpty()) {
       if (msg.text == "/ban") {
-        ban_list[len_of_ban_list_now] = msg.userID;
+        ban_list[len_of_ban_list_now] = msg.replyText;
         len_of_ban_list_now++;
         bot.sendMessage("Пользователь заблокирован.", MY_ID); // Блокировка пользователя с помощью команды /ban
       }

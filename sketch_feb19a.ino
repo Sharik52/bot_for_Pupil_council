@@ -1,4 +1,4 @@
-#define WIFI_SSID "FGI" // Название WiFi или точки доступа
+#define WIFI_SSID "hehehe" // Название WiFi или точки доступа
 #define WIFI_PASS "14761476" // Пароль от WiFi или точки доступа
 #define BOT_TOKEN "6014465871:AAHMedcI028U8P-on9mm1RaWh584ZxcTe2A" // Токен бота
 #define MY_ID "1563658077" // ID администратора
@@ -105,7 +105,7 @@ void loop() {
 // Подключение к сети
 void connectWiFi() {
   delay(2000);
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println();
 
   WiFi.begin(WIFI_SSID, WIFI_PASS);

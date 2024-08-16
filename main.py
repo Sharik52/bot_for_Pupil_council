@@ -3,9 +3,9 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 
 # Токен бота
-TOKEN = "6014465871:AAHMedcI028U8P-on9mm1RaWh584ZxcTe2A"
-# ID человека, которому бот будет пересылать сообщения (администратор) (узнать ID можно в боте @getmyid_bot)
-admin_id = 1563658077
+TOKEN = ""
+# ID человека (числовой формат), которому бот будет пересылать сообщения (администратор) (узнать ID можно в боте @getmyid_bot)
+admin_id = 
 
 boty = Bot(token=TOKEN)
 dp = Dispatcher(boty)
